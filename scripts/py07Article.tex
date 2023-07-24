@@ -1,0 +1,360 @@
+\documentclass{article}
+\usepackage{listings}
+\usepackage{amsmath}
+
+\title{Analysis of Tweeting Frequency by Age}
+\author{Jose Chavez }
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+In this article, we explore the relationship between age and tweeting frequency. We generate synthetic data representing users of different ages and their tweets over a period of time. We then analyze this data, visualize it, and train a linear regression model to predict the average number of tweets per week based on age.
+
+\section{Data Generation}
+
+The data generation process involves creating synthetic users of different ages and generating tweets for them. The number of tweets each user generates is influenced by their age, with younger users generally tweeting more frequently. The code for this process is as follows:
+
+\begin{lstlisting}[language=Python]
+import random
+import string
+import numpy as np
+import pandas as pd
+from scipy.stats import skewnorm
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
+
+def createWeeks():
+    today = datetime.now()
+    three_years_ago = today - relativedelta(years=3)
+    days = []
+    current_date = three_years_ago
+    while current_date <= today:
+        days.append(current_date)
+        current_date += timedelta(days=1)
+    weeks = []
+    current_day = 0
+    while current_day < len(days):
+        week = days[current_day:current_day+7]
+        weeks.append(week)
+        current_day += 7
+    return weeks
+
+def generate_random_string(length=10):
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for _ in range(length))
+
+def generate_tweets(tweet_dates):
+    tweets = []
+    for date in tweet_dates:
+        tweet_text = generate_random_string()
+        tweets.append((date, tweet_text))
+    return tweets
+
+def tweetDatesGenOne(age):
+    tweetdates=[]
+    rate = age_group(age)
+    weeks = createWeeks()
+    for week in weeks:
+        num_tweets = np.random.poisson(rate)
+        tweetdates += list(np.random.choice(week, size=num_tweets, replace=True))
+    return tweetdates
+
+def age_group(x):
+    if 16 <= x <= 25:
+        return 8
+    elif 26 <= x <= 35:
+        return 6
+    elif 36 <= x <= 45:
+        return 4
+    elif 46 <= x <= 55:
+        return 3
+    elif 56 <= x <= 65:
+        return 2
+    elif 66 <= x <= 75:
+        return 1
+    elif x >= 76:
+        return 0
+    else:
+        return 0
+
+def genAges(numberofAges):
+    skewness = -5
+    rand_var = skewnorm.rvs(a=skewness, loc=40, scale=10, size=numberofAges)
+    return rand_var
+
+def genTweetsAll(howmany):
+    data = []
+    x = genAges(howmany)
+    for y in x:
+        dates = tweetDatesGenOne(y)
+        tweets = generate_tweets(dates)
+        tweetstriples = [(y,) + tweet for tweet in tweets]
+        data.append(tweetstriples)
+    return data
+
+data = genTweetsAll(100)
+flat_data = [item for sublist in data for item in sublist]
+df = pd.DataFrame(flat_data, columns=['Age', 'Date', 'Tweet Content'])
+\end{lstlisting}
+
+This code first generates a list of dates for the past three years, divided into weeks. It then generates a list of ages using a skewed normal distribution to reflect the fact that more Twitter users are younger. For each age, it generates a list of tweet dates based on a Poisson distribution, with the rate depending on the age group. Finally, it generates a random tweet for each date and combines the age, date, and tweet into a single record. The result is a DataFrame with columns for age, date, and tweet content.
+
+
+\section{Data Generation}
+
+The data generation process involves creating synthetic users of different ages and generating tweets for them. The number of tweets each user generates is influenced by their age, with younger users generally tweeting more frequently. The code for this process is as follows:
+
+\begin{lstlisting}[language=Python]
+import random
+import string
+import numpy as np
+import pandas as pd
+from scipy.stats import skewnorm
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
+
+def createWeeks():
+    today = datetime.now()
+    three_years_ago = today - relativedelta(years=3)
+    days = []
+    current_date = three_years_ago
+    while current_date <= today:
+        days.append(current_date)
+        current_date += timedelta(days=1)
+    weeks = []
+    current_day = 0
+    while current_day < len(days):
+        week = days[current_day:current_day+7]
+        weeks.append(week)
+        current_day += 7
+    return weeks
+
+def generate_random_string(length=10):
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for _ in range(length))
+
+def generate_tweets(tweet_dates):
+    tweets = []
+    for date in tweet_dates:
+        tweet_text = generate_random_string()
+        tweets.append((date, tweet_text))
+    return tweets
+
+def tweetDatesGenOne(age):
+    tweetdates=[]
+    rate = age_group(age)
+    weeks = createWeeks()
+    for week in weeks:
+        num_tweets = np.random.poisson(rate)
+        tweetdates += list(np.random.choice(week, size=num_tweets, replace=True))
+    return tweetdates
+
+def age_group(x):
+    if 16 <= x <= 25:
+        return 8
+    elif 26 <= x <= 35:
+        return 6
+    elif 36 <= x <= 45:
+        return 4
+    elif 46 <= x <= 55:
+        return 3
+    elif 56 <= x <= 65:
+        return 2
+    elif 66 <= x <= 75:
+        return 1
+    elif x >= 76:
+        return 0
+    else:
+        return 0
+
+def genAges(numberofAges):
+    skewness = -5
+    rand_var = skewnorm.rvs(a=skewness, loc=40, scale=10, size=numberofAges)
+    return rand_var
+
+def genTweetsAll(howmany):
+    data = []
+    x = genAges(howmany)
+    for y in x:
+        dates = tweetDatesGenOne(y)
+        tweets = generate_tweets(dates)
+        tweetstriples = [(y,) + tweet for tweet in tweets]
+        data.append(tweetstriples)
+    return data
+
+data = genTweetsAll(100)
+flat_data = [item for sublist in data for item in sublist]
+df = pd.DataFrame(flat_data, columns=['Age', 'Date', 'Tweet Content'])
+\end{lstlisting}
+
+This code first generates a list of dates for the past three years, divided into weeks. It then generates a list of ages using a skewed normal distribution to reflect the fact that more Twitter users are younger. For each age, it generates a list of tweet dates based on a Poisson distribution, with the rate depending on the age group. Finally, it generates a random tweet for each date and combines the age, date, and tweet into a single record. The result is a DataFrame with columns for age, date, and tweet content.
+
+\section{Data Visualization}
+
+We create scatter plots to visualize the average number of tweets per week for each age group. We use two different libraries for this: Dash and Seaborn. The code for this process is as follows:
+
+\begin{lstlisting}[language=Python]
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Create a scatter plot using Seaborn
+plt.figure(figsize=(10, 6))
+sns.scatterplot(data=df_grouped, x='Age Group Mid', y='Avg Tweets per Week')
+plt.title('Average Number of Tweets per Week for Each Age Group')
+plt.show()
+\end{lstlisting}
+
+This code creates a scatter plot using the Seaborn library. The x-axis represents the mid-point of each age group, and the y-axis represents the average number of tweets per week. Each point on the plot represents an age group. The plot provides a visual representation of the relationship between age and tweeting frequency.
+
+\section{Model Training}
+
+We train a linear regression model on the data to find a line that approximates the connection between age and the number of tweets per week. The equation of the line is given by
+
+\begin{equation}
+\text{Tweets per Week} = m \times \text{Age} + c
+\end{equation}
+
+where $m$ is the slope of the line and $c$ is the y-intercept. The code for this process is as follows:
+
+\begin{lstlisting}[language=Python]
+from sklearn.linear_model import LinearRegression
+
+# Prepare the data for training
+X = df_grouped['Age Group Mid'].values.reshape(-1, 1)
+y = df_grouped['Avg Tweets per Week']
+
+# Train the model
+model = LinearRegression()
+model.fit(X, y)
+
+# Get the slope (m) and y-intercept (c) of the line
+m = model.coef_[0]
+c = model.intercept_
+\end{lstlisting}
+
+This code first prepares the data for training by reshaping the 'Age Group Mid' column into a 2D array and assigning it to X, and assigning the 'Avg Tweets per Week' column to y. It then creates an instance of the LinearRegression class and fits the model to the data. Finally, it retrieves the slope and y-intercept of the line from the model's coefficients and intercept.
+
+\section{Model Evaluation}
+
+We evaluate the effectiveness of the model using several metrics: Mean Absolute Error (MAE), Mean Squared Error (MSE), Root Mean Squared Error (RMSE), and R-squared. These metrics provide different perspectives on the model's performance. The code for this process is as follows:
+
+\begin{lstlisting}[language=Python]
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+
+# Predict the 'Tweets per Week' for the data
+y_pred = model.predict(X)
+
+# Calculate the metrics
+mae = mean_absolute_error(y, y_pred)
+mse = mean_squared_error(y, y_pred)
+rmse = np.sqrt(mse)
+r2 = r2_score(y, y_pred)
+
+# Print the metrics
+print('Mean Absolute Error:', mae)
+print('Mean Squared Error:', mse)
+print('Root Mean Squared Error:', rmse)
+print('R-squared:', r2)
+\end{lstlisting}
+
+This code first uses the trained model to predict the 'Tweets per Week' for the data. It then calculates the Mean Absolute Error (MAE), Mean Squared Error (MSE), Root Mean Squared Error (RMSE), and R-squared using the actual and predicted values. These metrics provide a quantitative measure of the model's performance.
+
+\section{Conclusion}
+
+Our analysis reveals a negative correlation between age and tweeting frequency, with younger users generally tweeting more frequently. However, the linear regression model suggests that age alone does not explain a large portion of the variability in the number of tweets per week. Other factors not included in this model could potentially improve its predictive power. 
+
+The R-squared value of the model is relatively low, indicating that only a small portion of the variability in the number of tweets per week can be explained by age. The Mean Absolute Error (MAE) and Root Mean Squared Error (RMSE) also suggest that the model's predictions are not very close to the actual values. 
+
+In future work, we could consider including other variables in the model, such as the time of day or day of the week that the tweets are posted, the user's number of followers, and the user's number of followings. These additional variables could potentially improve the model's predictive power and provide more insight into the factors that influence tweeting frequency.
+
+
+\section{Polynomial Regression}
+
+After observing the scatter plot, we noticed that the relationship between the age group and the average number of tweets per week seemed to be more of a parabolic nature rather than linear. This led us to consider using a polynomial regression model to better fit our data.
+
+\subsection{Model Training and Evaluation}
+
+We trained a polynomial regression model of degree 2 on our data. The model performance was evaluated using two metrics: Root Mean Squared Error (RMSE) and Coefficient of Determination ($R^2$).
+
+The RMSE represents the sample standard deviation of the differences between predicted values and observed values (called residuals). Lower values of RMSE indicate a better fit of the data.
+
+The $R^2$ score represents the proportion of the variance for a dependent variable that's explained by an independent variable or variables in a regression model. If the $R^2$ of a model is 0.39, that means that 39\% of the variability in the output variable can be explained by the input variables.
+
+The model performance for the training set was:
+\begin{itemize}
+\item RMSE of training set: 125.91
+\item $R^2$ score of training set: 0.39
+\end{itemize}
+
+The model performance for the test set was:
+\begin{itemize}
+\item RMSE of test set: 163.55
+\item $R^2$ score of test set: 0.00
+\end{itemize}
+
+\subsection{Visualizing the Polynomial Regression Model}
+
+We visualized the polynomial regression model by plotting the predicted average number of tweets per week against the age group midpoints. The scatter plot showed that the polynomial regression model fits the data better than the linear regression model. The curve captured the trend that users tweet more frequently in their mid-life compared to their younger or older years.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{polynomial_regression_plot.png}
+\caption{Polynomial Regression Model}
+\end{figure}
+
+\begin{lstlisting}[language=Python]
+# Import the necessary library
+from sklearn.preprocessing import PolynomialFeatures
+
+# Create a PolynomialFeatures object with degree 2
+poly_features = PolynomialFeatures(degree=2)
+
+# Transform the features to higher degree features.
+X_train_poly = poly_features.fit_transform(X_train)
+X_test_poly = poly_features.fit_transform(X_test)
+
+# Fit the transformed features to Linear Regression
+poly_model = LinearRegression()
+poly_model.fit(X_train_poly, y_train)
+
+# Predicting on training data-set
+y_train_predicted = poly_model.predict(X_train_poly)
+
+# Predicting on test data-set
+y_test_predict = poly_model.predict(X_test_poly)
+
+# Evaluating the model on training dataset
+rmse_train = np.sqrt(mean_squared_error(y_train, y_train_predicted))
+r2_train = r2_score(y_train, y_train_predicted)
+
+# Evaluating the model on test dataset
+rmse_test = np.sqrt(mean_squared_error(y_test, y_test_predict))
+r2_test = r2_score(y_test, y_test_predict)
+
+print('The model performance for the training set')
+print('-------------------------------------------')
+print('RMSE of training set is {}'.format(rmse_train))
+print('R2 score of training set is {}'.format(r2_train))
+
+print('\\n')
+
+print('The model performance for the test set')
+print('-------------------------------------------')
+print('RMSE of test set is {}'.format(rmse_test))
+print('R2 score of test set is {}'.format(r2_test))
+
+# Visualising the Polynomial Regression results
+plt.scatter(X_test, y_test, color = 'red')
+plt.plot(X_test, y_test_predict, color = 'blue')
+plt.title('Predictions with Polynomial Regression')
+plt.xlabel('Age Group Mid')
+plt.ylabel('Avg Tweets per Week')
+plt.show()
+\end{lstlisting}
+
+
+\end{document}
