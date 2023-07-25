@@ -8,26 +8,61 @@ Data Generation	scripts/py07Article.tex	/^\\section{Data Generation}$/;"	s
 Data Visualization	scripts/py07Article.tex	/^\\section{Data Visualization}$/;"	s
 Introduction	scripts/py07Article.tex	/^\\section{Introduction}$/;"	s
 Model Training	scripts/py07Article.tex	/^\\section{Model Training}$/;"	s
+PolynomialFeatures	listversion/mlNstats/ml_poly.py	/^from sklearn.preprocessing import PolynomialFeatures$/;"	i
 Visualizing the Polynomial Regression Model	scripts/py07Article.tex	/^\\subsection{Visualizing the Polynomial Regression Model}$/;"	b
+X	listversion/mlNstats/ml_poly.py	/^X = np.array(ages).reshape(-1, 1)$/;"	v
+X_poly	listversion/mlNstats/ml_poly.py	/^X_poly = poly.fit_transform(X)$/;"	v
+addnullandOut	listversion/tools/add_noise.py	/^def addnullandOut(yourList):$/;"	f
 age_group	scripts/py07.py	/^def age_group(x):$/;"	f
+ages	listversion/gen/generatefake.py	/^ages = [random.randint(15,75) for _ in range(500)]$/;"	v
+agesNrates	listversion/gen/generatefake.py	/^agesNrates=list(zip(ages,rates))$/;"	v
+agesonly	listversion/listversion.py	/^agesonly=get_first_coordinates(randomsamp)$/;"	v
+big_list_of_tuples	scripts/0724.py	/^big_list_of_tuples = generate_random_data(1000)$/;"	v
+calculate_mean_and_std_deviation	listversion/mlNstats/simplestatsfake.py	/^def calculate_mean_and_std_deviation(tuple_list):$/;"	f
+calculate_result	listversion/gen/generatefake.py	/^def calculate_result(number):$/;"	f
+createDF	listversion/other/pdftools.py	/^def createDF(theList):$/;"	f
 createWeeks	scripts/py07.py	/^def createWeeks():# so far set to only work for 3 years back$/;"	f
+createcsv	listversion/other/pdftools.py	/^def createcsv(theList):$/;"	f
 data	scripts/py07.py	/^data = genTweetsAll(100)$/;"	v
 datetime	scripts/py07.py	/^from datetime import datetime, timedelta$/;"	i
+df	listversion/listversion.py	/^df = pd.DataFrame({'Ages': ages, 'Rates': rates})$/;"	v
 df	scripts/py07.py	/^    df = pd.DataFrame(flat_data, columns=['Age', 'Date', 'Tweet Content'])$/;"	v
 df	scripts/py07.py	/^df = pd.DataFrame(flat_data, columns=['Age', 'Date', 'Tweet Content'])$/;"	v
+find_outliers_with_mean	scripts/0724.py	/^def find_outliers_with_mean(grouped_data, threshold=1.8):$/;"	f
+first_element	scripts/0724.py	/^    first_element = tpl[0]$/;"	v
 flat_data	scripts/py07.py	/^    flat_data = [item for sublist in tweets_data for item in sublist]$/;"	v
 flat_data	scripts/py07.py	/^flat_data = [item for sublist in data for item in sublist]$/;"	v
 genAges	scripts/py07.py	/^def genAges(numberofAges):$/;"	f
 genTweetsAll	scripts/py07.py	/^def genTweetsAll(howmany):$/;"	f
+generate_random_data	scripts/0724.py	/^def generate_random_data(size):$/;"	f
 generate_random_string	scripts/py07.py	/^def generate_random_string(length=10):$/;"	f
 generate_tweets	scripts/py07.py	/^def generate_tweets(tweet_dates):$/;"	f
+get_first_coordinates	listversion/listversion.py	/^def get_first_coordinates(tuple_list):$/;"	f
+get_first_coordinates	listversion/tools/coordgrabbers.py	/^def get_first_coordinates(tuple_list):$/;"	f
+gf	listversion/main.py	/^import generatefake as gf$/;"	i
+grouped_tuples	scripts/0724.py	/^grouped_tuples = {}$/;"	v
+math	listversion/mlNstats/simplestatsfake.py	/^import math$/;"	i
+meanfromListof	listversion/mlNstats/simplestatsfake.py	/^def meanfromListof(thelist):$/;"	f
+mse_poly	listversion/mlNstats/ml_poly.py	/^mse_poly = mean_squared_error(y, y_poly_pred)$/;"	v
 np	scripts/py07.py	/^import numpy as np$/;"	i
 num_tweets	scripts/py07.py	/^    num_tweets = 100$/;"	v
+outliers_with_mean	scripts/0724.py	/^outliers_with_mean = find_outliers_with_mean(grouped_tuples)$/;"	v
+pd	listversion/other/pdftools.py	/^import pandas as pd$/;"	i
 pd	scripts/py07.py	/^import pandas as pd$/;"	i
+poly	listversion/mlNstats/ml_poly.py	/^poly = PolynomialFeatures(degree=2)$/;"	v
+poly_model	listversion/mlNstats/ml_poly.py	/^poly_model = LinearRegression()$/;"	v
+r2_poly	listversion/mlNstats/ml_poly.py	/^r2_poly = r2_score(y, y_poly_pred)$/;"	v
+random	scripts/0724.py	/^import random$/;"	i
 random	scripts/py07.py	/^import random$/;"	i
+randomsamp	listversion/listversion.py	/^randomsamp=random.sample(agesNrates, 10)$/;"	v
+rates	listversion/gen/generatefake.py	/^rates = list(map(calculate_result, ages))$/;"	v
 relativedelta	scripts/py07.py	/^from dateutil.relativedelta import relativedelta$/;"	i
+sf	listversion/main.py	/^import simplestatsfake as sf$/;"	i
 skewnorm	scripts/py07.py	/^from scipy.stats import skewnorm$/;"	i
+statistics	scripts/0724.py	/^import statistics$/;"	i
 string	scripts/py07.py	/^import string$/;"	i
 timedelta	scripts/py07.py	/^from datetime import datetime, timedelta$/;"	i
 tweetDatesGenOne	scripts/py07.py	/^def tweetDatesGenOne(age):$/;"	f
 tweets_data	scripts/py07.py	/^    tweets_data = genTweetsAll(num_tweets)$/;"	v
+y	listversion/mlNstats/ml_poly.py	/^y = np.array(rates)$/;"	v
+y_poly_pred	listversion/mlNstats/ml_poly.py	/^y_poly_pred = poly_model.predict(X_poly)$/;"	v
